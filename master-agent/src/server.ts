@@ -2,6 +2,8 @@ import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import dotenv from 'dotenv';
 import { workflowRoutes } from './routes/workflows';
+import { marketplaceRoutes } from './routes/marketplace';
+import { analyticsRoutes } from './routes/analytics';
 import { db } from './services/database';
 import { mcpClient } from './services/mcp-client';
 import { initializeGenkit } from './services/genkit-config';
@@ -44,6 +46,8 @@ server.get('/health', async () => {
 });
 
 server.register(workflowRoutes);
+server.register(marketplaceRoutes);
+server.register(analyticsRoutes);
 
 const start = async () => {
   try {

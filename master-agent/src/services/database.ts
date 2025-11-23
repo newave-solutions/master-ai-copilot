@@ -136,6 +136,88 @@ export const db = {
     });
   },
 
+  async createDeveloper(name: string, email: string, apiKey: string) {
+    return prisma.developer.create({
+      data: {
+        name,
+        email,
+        apiKey,
+      },
+    });
+  },
+
+  async findDeveloperByEmail(email: string) {
+    return prisma.developer.findUnique({
+      where: { email },
+    });
+  },
+
+  async getDeveloperById(id: string) {
+    return prisma.developer.findUnique({
+      where: { id },
+      include: {
+        tools: true,
+      },
+    });
+  },
+
+  async submitThirdPartyTool(toolDetails: {
+    name: string;
+    description?: string;
+    mcpServerUrl: string;
+    developerId: string;
+  }) {
+    return prisma.thirdPartyTool.create({
+      data: {
+        name: toolDetails.name,
+        description: toolDetails.description,
+        mcpServerUrl: toolDetails.mcpServerUrl,
+        developerId: toolDetails.developerId,
+        status: 'PENDING',
+      },
+    });
+  },
+
+  async getAllThirdPartyTools() {
+    return prisma.thirdPartyTool.findMany({
+      include: {
+        developer: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  },
+
+  async getApprovedThirdPartyTools() {
+    return prisma.thirdPartyTool.findMany({
+      where: {
+        status: 'APPROVED',
+      },
+      include: {
+        developer: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  },
+
+  async reviewThirdPartyTool(
+    id: string,
+    status: 'APPROVED' | 'REJECTED',
+    reviewNotes?: string
+  ) {
+    return prisma.thirdPartyTool.update({
+      where: { id },
+      data: {
+        status,
+        reviewNotes,
+        reviewedAt: new Date(),
+      },
+    });
+  },
+
   async disconnect() {
     await prisma.$disconnect();
   },

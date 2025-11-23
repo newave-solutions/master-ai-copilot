@@ -47,6 +47,36 @@ model Job {
   @@index([status])
 }
 
+model Developer {
+  id        String            @id @default(uuid())
+  name      String
+  email     String            @unique
+  apiKey    String?           @unique
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  tools     ThirdPartyTool[]
+
+  @@map("developers")
+}
+
+model ThirdPartyTool {
+  id            String            @id @default(uuid())
+  name          String
+  description   String?
+  mcpServerUrl  String
+  status        ToolApprovalStatus @default(PENDING)
+  developerId   String
+  developer     Developer         @relation(fields: [developerId], references: [id], onDelete: Cascade)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  reviewedAt    DateTime?
+  reviewNotes   String?
+
+  @@map("third_party_tools")
+  @@index([developerId])
+  @@index([status])
+}
+
 enum WorkflowStatus {
   PENDING
   RUNNING
@@ -59,4 +89,10 @@ enum JobStatus {
   RUNNING
   COMPLETED
   FAILED
+}
+
+enum ToolApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
