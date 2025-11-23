@@ -1,22 +1,21 @@
-import { ToolHandler } from '../types';
+import { toolRegistry } from './registry';
 import { lovableDesignUI, boltDevelopLogic } from './internal';
 import { embraceStageAndTest } from './external';
 
-export const toolRegistry: Record<string, ToolHandler> = {
-  'lovable-ai/design-ui': lovableDesignUI,
-  'bolt-new-ai/develop-logic': boltDevelopLogic,
-  'embrace-io/stage-and-test': embraceStageAndTest,
-};
+// Register default tools
+toolRegistry.register('lovable-ai/design-ui', lovableDesignUI);
+toolRegistry.register('bolt-new-ai/develop-logic', boltDevelopLogic);
+toolRegistry.register('embrace-io/stage-and-test', embraceStageAndTest);
 
 export const dispatchTool = async (
   toolName: string,
   input: Record<string, any>
 ): Promise<any> => {
-  const handler = toolRegistry[toolName];
+  const handler = toolRegistry.get(toolName);
 
   if (!handler) {
     throw new Error(
-      `Tool '${toolName}' not found. Available tools: ${Object.keys(toolRegistry).join(', ')}`
+      `Tool '${toolName}' not found. Available tools: ${toolRegistry.getAll().join(', ')}`
     );
   }
 
@@ -24,5 +23,5 @@ export const dispatchTool = async (
 };
 
 export const getAvailableTools = (): string[] => {
-  return Object.keys(toolRegistry);
+  return toolRegistry.getAll();
 };
