@@ -4,6 +4,36 @@ import { orchestrator } from '../services/orchestrator';
 import { CreateWorkflowRequest, CreateWorkflowResponse, WorkflowStatusResponse } from '../types';
 
 export async function workflowRoutes(fastify: FastifyInstance) {
+  fastify.get('/workflows', async (_request, reply) => {
+    try {
+      const workflows = await db.getAllWorkflows();
+
+      return workflows.map((workflow) => ({
+        id: workflow.id,
+        projectName: workflow.project.name,
+        status: workflow.status,
+        createdAt: workflow.createdAt,
+        updatedAt: workflow.updatedAt,
+        jobs: workflow.jobs.map((job) => ({
+          id: job.id,
+          toolName: job.toolName,
+          status: job.status,
+          startedAt: job.startedAt,
+          completedAt: job.completedAt,
+          error: job.error,
+          input: job.input,
+          output: job.output,
+        })),
+      }));
+    } catch (error) {
+      fastify.log.error(error);
+      reply.code(500);
+      return {
+        error: error instanceof Error ? error.message : 'Failed to fetch workflows',
+      };
+    }
+  });
+
   fastify.post<{ Body: CreateWorkflowRequest }>(
     '/workflows',
     async (request, reply) => {

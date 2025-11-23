@@ -37,6 +37,18 @@ export const db = {
     });
   },
 
+  async getAllWorkflows() {
+    return prisma.workflow.findMany({
+      include: {
+        project: true,
+        jobs: {
+          orderBy: { createdAt: 'asc' },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  },
+
   async getWorkflow(workflowId: string) {
     return prisma.workflow.findUnique({
       where: { id: workflowId },
