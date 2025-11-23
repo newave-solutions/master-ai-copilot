@@ -1,32 +1,15 @@
 import { FastifyInstance } from 'fastify';
-import { db } from '../services/database';
 import { orchestrator } from '../services/orchestrator';
-import { CreateWorkflowRequest, CreateWorkflowResponse, WorkflowStatusResponse } from '../types';
+import { CreateWorkflowRequest } from '../types';
 import { generateWorkflow } from '../services/ai-workflow-generator';
 import { analysisService } from '../services/AnalysisService';
+import { workflowService } from '../services/WorkflowService';
 
 export async function workflowRoutes(fastify: FastifyInstance) {
   fastify.get('/workflows', async (_request, reply) => {
     try {
-      const workflows = await db.getAllWorkflows();
-
-      return workflows.map((workflow) => ({
-        id: workflow.id,
-        projectName: workflow.project.name,
-        status: workflow.status,
-        createdAt: workflow.createdAt,
-        updatedAt: workflow.updatedAt,
-        jobs: workflow.jobs.map((job) => ({
-          id: job.id,
-          toolName: job.toolName,
-          status: job.status,
-          startedAt: job.startedAt,
-          completedAt: job.completedAt,
-          error: job.error,
-          input: job.input,
-          output: job.output,
-        })),
-      }));
+      const workflows = await workflowService.getAllWorkflows();
+      return workflows;
     } catch (error) {
       fastify.log.error(error);
       reply.code(500);
@@ -49,21 +32,11 @@ export async function workflowRoutes(fastify: FastifyInstance) {
       }
 
       try {
-        const project = await db.getOrCreateProject(projectName);
+        const response = await workflowService.createWorkflow(projectName);
 
-        const workflow = await db.createWorkflow(project.id);
+        orchestrator.startWorkflow(response.workflowId);
 
-        orchestrator.startWorkflow(workflow.id);
-
-        fastify.log.info(`Workflow ${workflow.id} created and started for project: ${projectName}`);
-
-        const response: CreateWorkflowResponse = {
-          workflowId: workflow.id,
-          projectId: project.id,
-          projectName: project.name,
-          status: workflow.status,
-          message: 'Workflow created and started successfully',
-        };
+        fastify.log.info(`Workflow ${response.workflowId} created and started for project: ${projectName}`);
 
         reply.code(201);
         return response;
@@ -83,7 +56,7 @@ export async function workflowRoutes(fastify: FastifyInstance) {
       const { id } = request.params;
 
       try {
-        const workflow = await db.getWorkflow(id);
+        const workflow = await workflowService.getWorkflow(id);
 
         if (!workflow) {
           reply.code(404);
@@ -92,24 +65,7 @@ export async function workflowRoutes(fastify: FastifyInstance) {
           };
         }
 
-        const response: WorkflowStatusResponse = {
-          id: workflow.id,
-          projectName: workflow.project.name,
-          status: workflow.status,
-          createdAt: workflow.createdAt,
-          updatedAt: workflow.updatedAt,
-          jobs: workflow.jobs.map((job) => ({
-            id: job.id,
-            toolName: job.toolName,
-            status: job.status,
-            startedAt: job.startedAt,
-            completedAt: job.completedAt,
-            error: job.error,
-            output: job.output,
-          })),
-        };
-
-        return response;
+        return workflow;
       } catch (error) {
         fastify.log.error(error);
         reply.code(500);
