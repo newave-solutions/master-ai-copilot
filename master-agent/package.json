@@ -1,0 +1,31 @@
+{
+  "name": "master-agent",
+  "version": "1.0.0",
+  "description": "AI orchestration master agent service",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "npx tsx watch src/server.ts",
+    "build": "npx tsc",
+    "start": "node dist/server.js",
+    "prisma:generate": "npx prisma generate",
+    "prisma:migrate": "npx prisma migrate dev",
+    "prisma:studio": "npx prisma studio",
+    "prisma:deploy": "npx prisma migrate deploy",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@fastify/cors": "^8.5.0",
+    "@prisma/client": "^5.22.0",
+    "axios": "^1.13.2",
+    "dotenv": "^16.6.1",
+    "fastify": "^4.29.1",
+    "pino": "^8.21.0",
+    "pino-pretty": "^10.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.25",
+    "prisma": "^5.22.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}
