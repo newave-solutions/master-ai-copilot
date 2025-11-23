@@ -4,8 +4,16 @@ import dotenv from 'dotenv';
 import { workflowRoutes } from './routes/workflows';
 import { db } from './services/database';
 import { mcpClient } from './services/mcp-client';
+import { initializeGenkit } from './services/genkit-config';
 
 dotenv.config({ path: '../.env' });
+
+if (process.env.GOOGLE_API_KEY) {
+  initializeGenkit();
+  console.log('✨ Genkit AI initialized');
+} else {
+  console.warn('⚠️  GOOGLE_API_KEY not set. AI features will be unavailable.');
+}
 
 const server = Fastify({
   logger: {

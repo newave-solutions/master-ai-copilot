@@ -118,6 +118,24 @@ export const db = {
     });
   },
 
+  async getJobById(jobId: string) {
+    return prisma.job.findUnique({
+      where: { id: jobId },
+    });
+  },
+
+  async saveJobAnalysis(jobId: string, analysis: any) {
+    return prisma.job.update({
+      where: { id: jobId },
+      data: {
+        output: {
+          ...(typeof analysis === 'object' ? analysis : {}),
+          analysis,
+        },
+      },
+    });
+  },
+
   async disconnect() {
     await prisma.$disconnect();
   },
