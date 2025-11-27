@@ -1,0 +1,48 @@
+{
+  "name": "task-delegator",
+  "description": "Intelligent task delegation agent that routes development work to specialized services like bolt.new, lovable.dev, and other AI-powered development platforms",
+  "version": "1.0.0",
+  "author": "Newave Solutions",
+  "capabilities": [
+    "task-analysis",
+    "service-selection",
+    "task-delegation",
+    "progress-tracking"
+  ],
+  "endpoints": {
+    "delegate": "/api/delegate",
+    "status": "/api/delegate/status",
+    "services": "/api/delegate/services"
+  },
+  "supportedServices": [
+    {
+      "id": "bolt",
+      "name": "bolt.new",
+      "specialties": ["full-stack", "rapid-prototyping", "web-apps"],
+      "url": "https://bolt.new"
+    },
+    {
+      "id": "lovable",
+      "name": "lovable.dev",
+      "specialties": ["ui-design", "frontend", "react", "tailwind"],
+      "url": "https://lovable.dev"
+    },
+    {
+      "id": "v0",
+      "name": "v0.dev",
+      "specialties": ["ui-components", "nextjs", "shadcn"],
+      "url": "https://v0.dev"
+    },
+    {
+      "id": "cursor",
+      "name": "cursor.sh",
+      "specialties": ["code-editing", "refactoring", "bug-fixing"],
+      "url": "https://cursor.sh"
+    }
+  ],
+  "configuration": {
+    "baseUrl": "http://localhost:3000",
+    "timeout": 300000,
+    "retries": 3
+  }
+}

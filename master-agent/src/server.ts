@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { workflowRoutes } from './routes/workflows';
 import { marketplaceRoutes } from './routes/marketplace';
 import { analyticsRoutes } from './routes/analytics';
+import { delegationRoutes } from './routes/delegation';
 import { db } from './services/database';
 import { mcpClient } from './services/mcp-client';
 import { initializeGenkit } from './services/genkit-config';
@@ -48,6 +49,7 @@ server.get('/health', async () => {
 server.register(workflowRoutes);
 server.register(marketplaceRoutes);
 server.register(analyticsRoutes);
+server.register(delegationRoutes);
 
 const start = async () => {
   try {

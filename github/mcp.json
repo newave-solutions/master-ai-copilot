@@ -1,0 +1,32 @@
+{
+  "mcpServers": {
+    "copilot": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@github/mcp-server-copilot"
+      ]
+    },
+    "jules": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-jules"
+      ]
+    },
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ]
+    },
+    "supabase": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-supabase"
+      ]
+    }
+  }
+}
